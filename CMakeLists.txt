@@ -23,21 +23,29 @@ include_directories(${Boost_INCLUDE_DIRS})
 # local headers
 include_directories(include)
 
+# resources
+set(resources
+)
+
+# souces
 set(sources
         include/types.h
-        include/news_sources.h
-        include/utils.h
+        src/utils.cpp include/utils.h
+        src/smiley.cpp include/smiley.h
+        src/emoji.cpp include/emoji.h
+        src/lexicon.cpp include/lexicon.h
         src/feeds.cpp include/feeds.h
-        src/download.cpp include/download.h
+        src/sentiment.cpp include/sentiment.h
         src/library.cpp include/library.h
 )
 
 # our library
-add_library(marvin ${sources})
+add_library(marvin ${sources} ${resources})
 target_link_libraries(marvin ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES})
 
 # our test executable
 add_definitions(-DCATCH_CONFIG_RUNNER)
 add_definitions(-DCATCH_CONFIG_MAIN)
-add_executable(marvin_tests ${sources} test/marvin_tests.cpp)
-target_link_libraries(marvin_tests ${Boost_LIBRARIES} ${LIBXML2_LIBRARIES} ${CURL_LIBRARIES})
+add_executable(marvin_tests test/marvin_tests.cpp)
+target_link_libraries(marvin_tests marvin)
+add_custom_command(TARGET marvin_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/marvin/resources $<TARGET_FILE_DIR:marvin_tests>/resources)

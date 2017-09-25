@@ -1,35 +1,58 @@
 #include <cstring>
 #include <vector>
+#include <codecvt>
+
 #include <libxml/parser.h>
+
+#include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/algorithm/string.hpp>
+
 #include "feeds.h"
 
 using namespace std;
+using namespace boost;
 
 namespace feeds {
 
-    string get_content(xmlNode *node) {
-        string retval;
+    wstring xml_char_to_wstring(const xmlChar *xml) {
+        if (!xml) {
+            BOOST_LOG_TRIVIAL(warning) << "provided xml string was null";
+            return L"";
+        }
+        try {
+            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+            return convert.from_bytes((const char*) xml);
+        }
+        catch(const std::range_error& e)
+        {
+            BOOST_LOG_TRIVIAL(error) << format("xml conversion failed on %s") % e.what();
+            return L"";
+        }
+    }
+
+    wstring get_content(xmlNode *node) {
+        wstring result;
         if (node) {
             xmlChar *content = xmlNodeGetContent(node);
             if (content) {
-                retval = (const char *)content;
+                result = xml_char_to_wstring(content);
                 xmlFree(content);
             }
         }
-        return retval;
+        return result;
     }
 
-    string get_prop(xmlNode *node, const char *prop) {
-        string retval;
+    wstring get_prop(xmlNode *node, const char *prop) {
+        wstring result;
         if (node) {
             xmlChar * value = xmlGetProp(node, (xmlChar *) prop);
             if (value) {
-                retval = (const char*)value;
+                result = xml_char_to_wstring(value);
                 xmlFree(value);
             }
         }
-        return retval;
+        return result;
     }
 
     bool node_is(xmlNode *node, const char *name) {
@@ -40,8 +63,8 @@ namespace feeds {
     }
 
 
-    feed_t parse(string xml, string url) {
-        xmlDocPtr doc = xmlReadMemory(xml.c_str(), static_cast<int>(xml.size()), url.c_str(), nullptr, XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
+    feed_t parse(string url) {
+        xmlDocPtr doc = xmlReadFile(url.c_str(), nullptr, XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING);
         if (doc == nullptr){
             BOOST_LOG_TRIVIAL(error) << "could not parse buffer";
             return feed_t();
@@ -90,9 +113,9 @@ namespace feeds {
                                 it.pubDate = get_content(itnode);
                             } else if (node_is(itnode, "guid")) {
                                 it.guid = get_content(itnode);
-                            } else if (node_is(itnode, "media:group")) {
+                            } else if (node_is(itnode, "group")) {
                                 for (xmlNode *mnode = itnode->children; mnode != nullptr; mnode = mnode->next) {
-                                    if (node_is(mnode, "media:content")) {
+                                    if (node_is(mnode, "content")) {
                                         media_t media;
                                         media.media = get_prop(mnode, "url");
                                         media.type = get_prop(mnode, "medium");

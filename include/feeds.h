@@ -6,7 +6,7 @@
 
 namespace feeds {
 
-    feed_t parse(std::string xml, std::string url);
+    feed_t parse(std::string url);
 
 }
 

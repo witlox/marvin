@@ -1,10 +1,14 @@
 #include <map>
 #include <cstring>
 
+#include <boost/algorithm/string.hpp>
+
+#include "lexicon.h"
+
 using namespace std;
+using namespace boost;
 
 namespace lexicon {
-    typedef std::map<std::wstring, float> Lexicon;
 
     static Lexicon lexicon = {
             {L"$:",                  -1.5},
@@ -3958,7 +3962,7 @@ namespace lexicon {
             {L"inconsiderate",       -1.9},
             {L"inconvenience",       -1.5},
             {L"inconvenient",        -1.4},
-            {L"increase",            1.3},
+            {L"intensity_increase",            1.3},
             {L"increased",           1.1},
             {L"indecision",          -0.8},
             {L"indecisions",         -1.1},
@@ -7527,13 +7531,14 @@ namespace lexicon {
     };
 
     float score(wstring word) {
-        if (lexicon.find(word) == lexicon.end()) {
+        wstring lower_word = to_lower_copy(word);
+        if (lexicon.find(lower_word) == lexicon.end()) {
             return 0;
         }
-        return lexicon[word];
+        return lexicon[lower_word];
     }
 
     bool contains(wstring word) {
-        return lexicon.find(word) != lexicon.end();
+        return lexicon.find(to_lower_copy(word)) != lexicon.end();
     }
 }

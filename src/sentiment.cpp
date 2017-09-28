@@ -59,12 +59,12 @@ namespace sentiment {
     }
     namespace helpers {
 
-        // (empirically derived mean sentiment intensity rating increase for booster words)
-        double bIncrease = 0.293;
-        double bDecrease = -0.293;
+        // (empirically derived mean sentiment intensity rating intensity_increase for booster words)
+        double booster_increase = 0.293;
+        double booster_decrease = -0.293;
 
-        // (empirically derived mean sentiment intensity rating increase for using ALLCAPs to emphasize a word)
-        double cIncrease = 0.733;
+        // (empirically derived mean sentiment intensity rating intensity_increase for using ALLCAPs to emphasize a word)
+        double intensity_increase = 0.733;
 
         // negation words
         const std::wstring negate[] = {
@@ -78,72 +78,72 @@ namespace sentiment {
 
         // booster/dampener 'intensifiers' or 'degree adverbs' http://en.wiktionary.org/wiki/Category:English_degree_adverbs
         Influencer booster_dictionary = {
-                {L"absolutely", bIncrease},
-                {L"amazingly", bIncrease},
-                {L"awfully", bIncrease},
-                {L"completely", bIncrease},
-                {L"considerably", bIncrease},
-                {L"decidedly", bIncrease},
-                {L"deeply", bIncrease},
-                {L"effing", bIncrease},
-                {L"enormously", bIncrease},
-                {L"entirely", bIncrease},
-                {L"especially", bIncrease},
-                {L"exceptionally", bIncrease},
-                {L"extremely", bIncrease},
-                {L"fabulously", bIncrease},
-                {L"flipping", bIncrease},
-                {L"flippin", bIncrease},
-                {L"fricking", bIncrease},
-                {L"frickin", bIncrease},
-                {L"frigging", bIncrease},
-                {L"friggin", bIncrease},
-                {L"fully", bIncrease},
-                {L"fucking", bIncrease},
-                {L"greatly", bIncrease},
-                {L"hella", bIncrease},
-                {L"highly", bIncrease},
-                {L"hugely", bIncrease},
-                {L"incredibly", bIncrease},
-                {L"intensely", bIncrease},
-                {L"majorly", bIncrease},
-                {L"more", bIncrease},
-                {L"most", bIncrease},
-                {L"particularly", bIncrease},
-                {L"purely", bIncrease},
-                {L"quite", bIncrease},
-                {L"really", bIncrease},
-                {L"remarkably", bIncrease},
-                {L"so", bIncrease},
-                {L"substantially", bIncrease},
-                {L"thoroughly", bIncrease},
-                {L"totally", bIncrease},
-                {L"tremendously", bIncrease},
-                {L"uber", bIncrease},
-                {L"unbelievably", bIncrease},
-                {L"unusually", bIncrease},
-                {L"utterly", bIncrease},
-                {L"very", bIncrease},
-                {L"almost", bDecrease},
-                {L"barely", bDecrease},
-                {L"hardly", bDecrease},
-                {L"just enough", bDecrease},
-                {L"kind of", bDecrease},
-                {L"kinda", bDecrease},
-                {L"kindof", bDecrease},
-                {L"kind-of", bDecrease},
-                {L"less", bDecrease},
-                {L"little", bDecrease},
-                {L"marginally", bDecrease},
-                {L"occasionally", bDecrease},
-                {L"partly", bDecrease},
-                {L"scarcely", bDecrease},
-                {L"slightly", bDecrease},
-                {L"somewhat", bDecrease},
-                {L"sort of", bDecrease},
-                {L"sorta", bDecrease},
-                {L"sortof", bDecrease},
-                {L"sort-of", bDecrease}
+                {L"absolutely", booster_increase},
+                {L"amazingly", booster_increase},
+                {L"awfully", booster_increase},
+                {L"completely", booster_increase},
+                {L"considerably", booster_increase},
+                {L"decidedly", booster_increase},
+                {L"deeply", booster_increase},
+                {L"effing", booster_increase},
+                {L"enormously", booster_increase},
+                {L"entirely", booster_increase},
+                {L"especially", booster_increase},
+                {L"exceptionally", booster_increase},
+                {L"extremely", booster_increase},
+                {L"fabulously", booster_increase},
+                {L"flipping", booster_increase},
+                {L"flippin", booster_increase},
+                {L"fricking", booster_increase},
+                {L"frickin", booster_increase},
+                {L"frigging", booster_increase},
+                {L"friggin", booster_increase},
+                {L"fully", booster_increase},
+                {L"fucking", booster_increase},
+                {L"greatly", booster_increase},
+                {L"hella", booster_increase},
+                {L"highly", booster_increase},
+                {L"hugely", booster_increase},
+                {L"incredibly", booster_increase},
+                {L"intensely", booster_increase},
+                {L"majorly", booster_increase},
+                {L"more", booster_increase},
+                {L"most", booster_increase},
+                {L"particularly", booster_increase},
+                {L"purely", booster_increase},
+                {L"quite", booster_increase},
+                {L"really", booster_increase},
+                {L"remarkably", booster_increase},
+                {L"so", booster_increase},
+                {L"substantially", booster_increase},
+                {L"thoroughly", booster_increase},
+                {L"totally", booster_increase},
+                {L"tremendously", booster_increase},
+                {L"uber", booster_increase},
+                {L"unbelievably", booster_increase},
+                {L"unusually", booster_increase},
+                {L"utterly", booster_increase},
+                {L"very", booster_increase},
+                {L"almost", booster_decrease},
+                {L"barely", booster_decrease},
+                {L"hardly", booster_decrease},
+                {L"just enough", booster_decrease},
+                {L"kind of", booster_decrease},
+                {L"kinda", booster_decrease},
+                {L"kindof", booster_decrease},
+                {L"kind-of", booster_decrease},
+                {L"less", booster_decrease},
+                {L"little", booster_decrease},
+                {L"marginally", booster_decrease},
+                {L"occasionally", booster_decrease},
+                {L"partly", booster_decrease},
+                {L"scarcely", booster_decrease},
+                {L"slightly", booster_decrease},
+                {L"somewhat", booster_decrease},
+                {L"sort of", booster_decrease},
+                {L"sorta", booster_decrease},
+                {L"sortof", booster_decrease},
+                {L"sort-of", booster_decrease}
         };
 
         bool negated(vector<wstring> words, bool include_nt) {
@@ -196,13 +196,14 @@ namespace sentiment {
         }
 
         double determine_scalar(const wstring &word, double valence, bool cap_diff) {
-            if (booster_dictionary.find(word) != booster_dictionary.end()) {
-                double scalar = booster_dictionary[word];
+            wstring word_lower = to_lower_copy(word);
+            if (booster_dictionary.find(word_lower) != booster_dictionary.end()) {
+                double scalar = booster_dictionary[word_lower];
                 if (valence < 0) {
                     scalar *= -1;
                 }
-                if (iequals(to_upper_copy(word), word) && cap_diff) {
-                    valence > 0 ? (scalar += cIncrease) : (scalar -= cIncrease);
+                if (all_of(word.begin(), word.end(), &::isupper) && cap_diff) {
+                    valence > 0 ? (scalar += intensity_increase) : (scalar -= intensity_increase);
                 }
                 return scalar;
             }
@@ -234,7 +235,7 @@ namespace sentiment {
                 if (!iequals(words_and_emoticons.at(i - 2), L"at") && !iequals(words_and_emoticons.at(i - 2), L"very")) {
                     valence *= nscalar;
                 }
-            } else if (i > 0 && !lexicon::contains(words_and_emoticons.at(i -1)) && iequals(words_and_emoticons.at(i - 1), L"very")) {
+            } else if (i > 0 && !lexicon::contains(words_and_emoticons.at(i -1)) && iequals(words_and_emoticons.at(i - 1), L"least")) {
                 valence *= nscalar;
             }
             return valence;
@@ -260,13 +261,13 @@ namespace sentiment {
                     break;
                 }
             }
-            if (words_and_emoticons.size() - 1 == i) {
+            if (words_and_emoticons.size() - 1 > i) {
                 wstring zeroone = str(wformat(L"%s %s") % words_and_emoticons.at(i) % words_and_emoticons.at(i + 1));
                 if (special_case_idioms.find(zeroone) != special_case_idioms.end()) {
                     valence = special_case_idioms[zeroone];
                 }
             }
-            if (words_and_emoticons.size() -1 == i + 1) {
+            if (words_and_emoticons.size() -1 > i + 1) {
                 wstring zeroonetwo = str(wformat(L"%s %s %s") % words_and_emoticons.at(i) % words_and_emoticons.at(i + 1) % words_and_emoticons.at(i + 2));
                 if (special_case_idioms.find(zeroonetwo) != special_case_idioms.end()) {
                     valence = special_case_idioms[zeroonetwo];
@@ -274,7 +275,7 @@ namespace sentiment {
             }
             if (helpers::booster_dictionary.find(threetwo) != helpers::booster_dictionary.end() ||
                     helpers::booster_dictionary.find(twoone) != helpers::booster_dictionary.end()) {
-                valence += helpers::bIncrease;
+                valence += helpers::booster_decrease;
             }
             return valence;
         }
@@ -363,18 +364,17 @@ namespace sentiment {
          */
         double sentiment_valence(const vector<wstring> &words_and_emoticons, const wstring &word, unsigned long i) {
             bool cap_diff = helpers::all_caps_differential(words_and_emoticons);
-            wstring lower_word = to_lower_copy(word);
-            if (lexicon::contains(lower_word)) {
-                double valence = lexicon::score(lower_word);
+            if (lexicon::contains(word)) {
+                double valence = lexicon::score(word);
                 if (all_of(word.begin(), word.end(), &::isupper) && cap_diff) {
                     if (valence > 0) {
-                        valence += helpers::cIncrease;
+                        valence += helpers::intensity_increase;
                     } else {
-                        valence -= helpers::cIncrease;
+                        valence -= helpers::intensity_increase;
                     }
                 }
                 for (int x = 0; x < 3; x++) {
-                    if (i > x && !lexicon::contains(to_lower_copy(words_and_emoticons.at(i - (x + 1))))) {
+                    if (i > x && !lexicon::contains(words_and_emoticons.at(i - (x + 1)))) {
                         double scalar = helpers::determine_scalar(words_and_emoticons.at(i - (x + 1)), valence, cap_diff);
                         if (x == 1 && scalar != 0) {
                             scalar *= 0.95;
@@ -439,23 +439,21 @@ namespace sentiment {
         }
 
         vector<double> but_check(const vector<wstring> &words_and_emoticons, vector<double> sentiments) {
-            unsigned long but = 0;
             for (unsigned long i = 0; i < words_and_emoticons.size(); i++) {
                 if (iequals(words_and_emoticons.at(i), "but")) {
                     for (unsigned long j = 0; j < sentiments.size(); j++) {
-                        if (j < but) {
+                        if (j < i) {
                             double s = sentiments.at(j) * 0.5;
                             sentiments.erase(sentiments.begin() + j);
-                            sentiments.push_back(s);
-                        } else if (j > but) {
+                            sentiments.insert(sentiments.begin() + j, s);
+                        } else if (j > i) {
                             double s = sentiments.at(j) * 1.5;
                             sentiments.erase(sentiments.begin() + j);
-                            sentiments.push_back(s);
+                            sentiments.insert(sentiments.begin() + j, s);
                         }
                     }
                 }
             }
-
             return sentiments;
         }
 

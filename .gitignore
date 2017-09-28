@@ -1,1 +1,4 @@
-.idea
+.idea/
+lib/
+test/tensorflow_inception_graph.pb
+test/imagenet_comp_graph_label_strings.txt

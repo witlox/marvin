@@ -4,6 +4,8 @@
 #include <string>
 
 namespace lexicon {
+    typedef std::map<std::wstring, float> Lexicon;
+
     float score(std::wstring word);
     bool contains(std::wstring word);
 }

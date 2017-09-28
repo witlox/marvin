@@ -3,6 +3,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/log/trivial.hpp>
 
 #include "catch.hpp"
 #include "utils.h"
@@ -11,9 +12,14 @@
 #include "smiley.h"
 #include "emoji.h"
 #include "sentiment.h"
+#include "download.h"
+#include "tensorflow.h"
 
 using namespace std;
 using namespace boost;
+
+using ml::images::Inception;
+using ml::images::inception_score;
 
 TEST_CASE("we can convert a date string to something more internal") {
     REQUIRE(utils::seconds_from_epoch("Wed, 20 Sep 2017 13:38:41 GMT") == 9223372036854);
@@ -81,7 +87,23 @@ inline double round4( double val ) {
 }
 
 bool compare_sentiment(sentiment::analyzer::sentiment_score a, sentiment::analyzer::sentiment_score b) {
-    return round3(a.positive) == b.positive && round3(a.negative) == b.negative && round3(a.neutral) == b.neutral && round4(a.compound) == b.compound;
+    if (round3(a.positive) != b.positive) {
+        BOOST_LOG_TRIVIAL(error) << format("comparison on positive failed %3f != %3f") % round3(a.positive) % b.positive;
+        return false;
+    }
+    if (round3(a.negative) != b.negative) {
+        BOOST_LOG_TRIVIAL(error) << format("comparison on negative failed %3f != %3f") % round3(a.negative) % b.negative;
+        return false;
+    }
+    if (round3(a.neutral) != b.neutral) {
+        BOOST_LOG_TRIVIAL(error) << format("comparison on negative failed %3f != %3f") % round3(a.neutral) % b.neutral;
+        return false;
+    }
+    if (round4(a.compound) != b.compound) {
+        BOOST_LOG_TRIVIAL(error) << format("comparison on negative failed %4f != %4f") % round4(a.compound) % b.compound;
+        return false;
+    }
+    return true;
 }
 
 TEST_CASE("sentiment analysis should work for simple sentences") {
@@ -111,4 +133,13 @@ TEST_CASE("sentiment analysis should work for more tricky sentences") {
     REQUIRE(compare_sentiment(sentiment::analyzer::polarity(L"Roger Dodger is one of the most compelling variations on this theme."), sentiment::analyzer::sentiment_score { 0.166, 0.0, 0.834, 0.2944 }));
     REQUIRE(compare_sentiment(sentiment::analyzer::polarity(L"Roger Dodger is one of the least compelling variations on this theme."), sentiment::analyzer::sentiment_score { 0.0, 0.132, 0.868, -0.1695 }));
     REQUIRE(compare_sentiment(sentiment::analyzer::polarity(L"Roger Dodger is at least compelling as a variation on the theme."), sentiment::analyzer::sentiment_score { 0.16, 0.0, 0.84, 0.2263 }));
+}
+
+TEST_CASE("we can do image classification") {
+    Inception *inception = new Inception("tensorflow_inception_graph.pb", "imagenet_comp_graph_label_strings.txt");
+    memory_block image = download::fetch_url("https://c402277.ssl.cf1.rackcdn.com/photos/13100/images/featured_story/BIC_128.png?1485963152");
+    int width = 0, heigth = 0;
+    REQUIRE(utils::determine_image_dimensions(image.memory, image.size, &width, &heigth));
+    vector<inception_score> results = inception->classify(&image, width, heigth);
+    REQUIRE(results.size() != 0);
 }

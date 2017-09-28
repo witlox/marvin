@@ -32,4 +32,18 @@ struct feed_t {
     std::vector<item_t> items;
 };
 
+typedef enum {
+    png,
+    jpg,
+    gif,
+    bmp,
+    unkown
+} memory_type;
+
+struct memory_block {
+    char *memory;
+    size_t size;
+    memory_type type;
+};
+
 #endif //MARVIN_TYPES_H
